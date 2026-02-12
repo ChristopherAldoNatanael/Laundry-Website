@@ -1,78 +1,66 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
 /**
  * HydrationFix Component
- * 
- * Removes browser extension-added attributes that cause hydration warnings.
- * Browser extensions (password managers, form fillers) add attributes like
- * 'fdprocessedid' which cause React hydration mismatches.
- * 
- * This is a cosmetic fix for development - these warnings don't affect production.
+ *
+ * Aggressively removes browser extension-added attributes BEFORE React hydration.
+ * This prevents hydration mismatches caused by extensions like LastPass, 1Password, etc.
  */
 export function HydrationFix() {
   useEffect(() => {
-    // Run after hydration to clean up extension-added attributes
-    const cleanupExtensionAttributes = () => {
-      const attributesToRemove = [
-        'fdprocessedid',
-        'data-lastpass-icon-root',
-        'data-form-type',
-        'data-kwimpalastatus',
-        'data-kwimpalaid',
-      ]
+    // List of attributes added by browser extensions
+    const extensionAttributes = ["fdprocessedid", "data-lastpass-icon-root", "data-lastpass-root", "data-form-type", "data-kwimpalastatus", "data-kwimpalaid", "data-1p-ignore", "data-dashlane-rid", "data-bwignore"];
 
-      // Remove from all elements
-      attributesToRemove.forEach((attr) => {
-        document.querySelectorAll(`[${attr}]`).forEach((el) => {
-          el.removeAttribute(attr)
-        })
-      })
-    }
+    // Function to clean all extension attributes
+    const cleanupAttributes = () => {
+      extensionAttributes.forEach((attr) => {
+        const elements = document.querySelectorAll(`[${attr}]`);
+        elements.forEach((el) => {
+          el.removeAttribute(attr);
+        });
+      });
+    };
 
-    // Clean up immediately and on DOM changes
-    cleanupExtensionAttributes()
+    // Clean immediately on mount (as early as possible)
+    cleanupAttributes();
 
-    // Use MutationObserver to catch extension modifications
+    // Clean after a short delay (catch late additions)
+    const timeoutId = setTimeout(cleanupAttributes, 100);
+
+    // Create MutationObserver to catch real-time changes
     const observer = new MutationObserver((mutations) => {
+      let needsCleanup = false;
+
       mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes') {
-          const target = mutation.target as HTMLElement
-          const attributesToRemove = [
-            'fdprocessedid',
-            'data-lastpass-icon-root',
-            'data-form-type',
-            'data-kwimpalastatus',
-            'data-kwimpalaid',
-          ]
-          
-          attributesToRemove.forEach((attr) => {
-            if (target.hasAttribute(attr)) {
-              target.removeAttribute(attr)
-            }
-          })
+        if (mutation.type === "attributes") {
+          const attrName = mutation.attributeName;
+          if (attrName && extensionAttributes.includes(attrName)) {
+            needsCleanup = true;
+          }
         }
-      })
-    })
+      });
 
-    // Observe the entire document for attribute changes
-    observer.observe(document.body, {
+      if (needsCleanup) {
+        cleanupAttributes();
+      }
+    });
+
+    // Start observing the entire document
+    observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: [
-        'fdprocessedid',
-        'data-lastpass-icon-root',
-        'data-form-type',
-        'data-kwimpalastatus',
-        'data-kwimpalaid',
-      ],
+      attributeFilter: extensionAttributes,
       subtree: true,
-    })
+      childList: false,
+    });
 
+    // Cleanup on unmount
     return () => {
-      observer.disconnect()
-    }
-  }, [])
+      clearTimeout(timeoutId);
+      observer.disconnect();
+    };
+  }, []);
 
-  return null
+  return null;
 }

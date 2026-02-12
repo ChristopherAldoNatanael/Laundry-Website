@@ -1,83 +1,65 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Mail, User, Phone, MessageSquare, Send, MapPin, Clock } from 'lucide-react'
-import { BUSINESS_CONFIG } from '@/lib/constants'
-import { useToast } from '@/hooks/use-toast'
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Mail, User, Phone, MessageSquare, Send, MapPin, Clock } from "lucide-react";
+import { BUSINESS_CONFIG } from "@/lib/constants";
+import { useToast } from "@/hooks/use-toast";
 
 export function ContactForm() {
-  const { toast } = useToast()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    message: '',
-  })
+    name: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Send to WhatsApp instead
-    const message = `Halo! Saya ingin bertanya:%0A%0ANama: ${formData.name}%0APhone: ${formData.phone}%0AEmail: ${formData.email}%0A%0APesan:%0A${formData.message}`
-    window.open(`https://wa.me/${BUSINESS_CONFIG.whatsappNumber}?text=${message}`, '_blank')
+    const message = `Halo! Saya ingin bertanya:%0A%0ANama: ${formData.name}%0APhone: ${formData.phone}%0AEmail: ${formData.email}%0A%0APesan:%0A${formData.message}`;
+    window.open(`https://wa.me/${BUSINESS_CONFIG.whatsappNumber}?text=${message}`, "_blank");
 
     toast({
-      title: 'Pesan Terkirim!',
-      description: 'Kami akan segera menghubungi Anda melalui WhatsApp.',
-    })
+      title: "Pesan Terkirim!",
+      description: "Kami akan segera menghubungi Anda melalui WhatsApp.",
+    });
 
-    setFormData({ name: '', phone: '', email: '', message: '' })
-    setIsSubmitting(false)
-  }
+    setFormData({ name: "", phone: "", email: "", message: "" });
+    setIsSubmitting(false);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
-    }))
-  }
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   return (
     <section id="contact" className="py-16 md:py-24 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-12 md:mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-poppins font-bold text-foreground mb-4">
-            Hubungi Kami
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Ada pertanyaan? Kami siap membantu Anda 24/7
-          </p>
+        <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="text-center mb-12 md:mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-poppins font-bold text-foreground mb-4">Hubungi Kami</h2>
+          <p className="text-lg text-muted-foreground">Ada pertanyaan? Kami siap membantu Anda 24/7</p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8 md:gap-12">
           {/* Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="space-y-8"
-          >
+          <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="space-y-8">
             <div>
-              <h3 className="text-2xl font-bold text-foreground mb-6 font-poppins">
-                Informasi Kontak
-              </h3>
+              <h3 className="text-2xl font-bold text-foreground mb-6 font-poppins">Informasi Kontak</h3>
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -95,10 +77,7 @@ export function ContactForm() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground mb-1">Telepon</h4>
-                    <a 
-                      href={`tel:${BUSINESS_CONFIG.businessPhone}`}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
+                    <a href={`tel:${BUSINESS_CONFIG.businessPhone}`} className="text-muted-foreground hover:text-primary transition-colors">
                       {BUSINESS_CONFIG.businessPhone}
                     </a>
                   </div>
@@ -110,10 +89,7 @@ export function ContactForm() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-foreground mb-1">Email</h4>
-                    <a 
-                      href={`mailto:${BUSINESS_CONFIG.businessEmail}`}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
+                    <a href={`mailto:${BUSINESS_CONFIG.businessEmail}`} className="text-muted-foreground hover:text-primary transition-colors">
                       {BUSINESS_CONFIG.businessEmail}
                     </a>
                   </div>
@@ -143,7 +119,7 @@ export function ContactForm() {
                     className="w-12 h-12 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg flex items-center justify-center hover:from-primary/40 hover:to-secondary/40 transition-all duration-300"
                   >
                     <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                     </svg>
                   </a>
                 )}
@@ -155,7 +131,7 @@ export function ContactForm() {
                     className="w-12 h-12 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg flex items-center justify-center hover:from-primary/40 hover:to-secondary/40 transition-all duration-300"
                   >
                     <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                     </svg>
                   </a>
                 )}
@@ -164,12 +140,7 @@ export function ContactForm() {
           </motion.div>
 
           {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <form onSubmit={handleSubmit} className="space-y-6 bg-card p-8 rounded-2xl shadow-lg border border-border">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
@@ -177,16 +148,7 @@ export function ContactForm() {
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                  <Input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="pl-10"
-                    placeholder="Masukkan nama Anda"
-                  />
+                  <Input id="name" name="name" type="text" required value={formData.name} onChange={handleChange} className="pl-10" placeholder="Masukkan nama Anda" />
                 </div>
               </div>
 
@@ -196,16 +158,7 @@ export function ContactForm() {
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="pl-10"
-                    placeholder="08xxxxxxxxxx"
-                  />
+                  <Input id="phone" name="phone" type="tel" required value={formData.phone} onChange={handleChange} className="pl-10" placeholder="08xxxxxxxxxx" />
                 </div>
               </div>
 
@@ -215,16 +168,7 @@ export function ContactForm() {
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="pl-10"
-                    placeholder="email@example.com"
-                  />
+                  <Input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} className="pl-10" placeholder="email@example.com" />
                 </div>
               </div>
 
@@ -234,24 +178,11 @@ export function ContactForm() {
                 </label>
                 <div className="relative">
                   <MessageSquare className="absolute left-3 top-3 text-muted-foreground" size={20} />
-                  <Textarea
-                    id="message"
-                    name="message"
-                    required
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="pl-10 min-h-[120px]"
-                    placeholder="Tuliskan pesan atau pertanyaan Anda..."
-                  />
+                  <Textarea id="message" name="message" required value={formData.message} onChange={handleChange} className="pl-10 min-h-[120px]" placeholder="Tuliskan pesan atau pertanyaan Anda..." />
                 </div>
               </div>
 
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-lg"
-                size="lg"
-              >
+              <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-lg" size="lg">
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
@@ -269,5 +200,5 @@ export function ContactForm() {
         </div>
       </div>
     </section>
-  )
+  );
 }

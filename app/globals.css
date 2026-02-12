@@ -30,19 +30,20 @@ body {
   .text-balance {
     text-wrap: balance;
   }
-  
+
   /* Safe area padding for mobile notches */
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
   }
-  
+
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
 @keyframes blob {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
   25% {

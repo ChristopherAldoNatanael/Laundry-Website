@@ -174,7 +174,8 @@ export const FAQS = [
   },
   {
     question: "Apa yang membedakan dry cleaning dengan cuci biasa?",
-    answer: "Dry cleaning adalah proses pembersihan tanpa menggunakan air, khusus untuk pakaian premium seperti jas, gaun pesta, dan bahan delicate yang tidak boleh terkena air. Prosesnya menggunakan solvent khusus yang aman untuk kain sensitif.",
+    answer:
+      "Dry cleaning adalah proses pembersihan tanpa menggunakan air, khusus untuk pakaian premium seperti jas, gaun pesta, dan bahan delicate yang tidak boleh terkena air. Prosesnya menggunakan solvent khusus yang aman untuk kain sensitif.",
   },
   {
     question: "Bagaimana jika ada pakaian yang rusak atau hilang?",

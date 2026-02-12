@@ -3,6 +3,7 @@
 ## ⚠️ What is the Hydration Warning?
 
 If you see this error in your browser console:
+
 ```
 Extra attributes from the server: fdprocessedid
 ```
@@ -12,6 +13,7 @@ Extra attributes from the server: fdprocessedid
 ## 🔍 What Causes This?
 
 Browser extensions (especially form fillers and password managers) add extra attributes to HTML elements:
+
 - `fdprocessedid` - Form auto-fill extensions
 - `data-lastpass-icon-root` - LastPass
 - `data-form-type` - Various form extensions
@@ -22,14 +24,18 @@ These attributes are added **after** the server renders the HTML but **before** 
 ## ✅ Solutions Implemented
 
 ### 1. **suppressHydrationWarning**
+
 Already added to `<html>` and `<body>` tags in `app/layout.tsx`:
+
 ```tsx
 <html lang="id" suppressHydrationWarning>
   <body suppressHydrationWarning>
 ```
 
 ### 2. **HydrationFix Component**
+
 A client-side component (`components/hydration-fix.tsx`) that:
+
 - Removes extension-added attributes after page load
 - Uses MutationObserver to catch future modifications
 - Runs only in the browser (client-side)
@@ -37,11 +43,13 @@ A client-side component (`components/hydration-fix.tsx`) that:
 ## 🛠️ How to Completely Remove the Warning
 
 ### Option 1: Test in Incognito/Private Mode (Recommended)
+
 - **Chrome/Edge**: Press `Ctrl + Shift + N` (Windows) or `Cmd + Shift + N` (Mac)
 - **Firefox**: Press `Ctrl + Shift + P` (Windows) or `Cmd + Shift + P` (Mac)
 - Extensions are usually disabled by default in private mode
 
 ### Option 2: Disable Specific Extensions
+
 1. Open your browser's extension manager
 2. Temporarily disable:
    - Form filler extensions
@@ -50,6 +58,7 @@ A client-side component (`components/hydration-fix.tsx`) that:
 3. Refresh the page
 
 ### Option 3: Ignore in Chrome DevTools
+
 1. Open DevTools (`F12`)
 2. Go to Settings (⚙️ icon or `F1`)
 3. Go to "Experiments" tab
@@ -57,6 +66,7 @@ A client-side component (`components/hydration-fix.tsx`) that:
 5. Restart DevTools
 
 ### Option 4: Use React DevTools Filter
+
 1. Install React Developer Tools extension
 2. Open React DevTools
 3. Click the Settings gear icon
@@ -72,12 +82,14 @@ A client-side component (`components/hydration-fix.tsx`) that:
 ## 🚀 Production Deployment
 
 When you deploy to production:
+
 ```bash
 npm run build
 npm start
 ```
 
 The warning will **NOT** appear because:
+
 - React Strict Mode is disabled in production
 - Hydration warnings are development-only
 - The built version is optimized and clean
@@ -85,6 +97,7 @@ The warning will **NOT** appear because:
 ## 🧪 Testing
 
 To verify the fix is working:
+
 1. Open in incognito mode
 2. Open DevTools Console (`F12`)
 3. You should see NO hydration warnings
