@@ -56,7 +56,7 @@ export function Testimonials() {
   const testimonial = TESTIMONIALS[current];
 
   return (
-    <section id="testimonials" className="py-16 md:py-24 bg-muted/30">
+    <section id="testimonials" className="py-16 md:py-24 bg-muted/30 overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }} className="text-center mb-12 md:mb-16">
@@ -65,7 +65,7 @@ export function Testimonials() {
         </motion.div>
 
         {/* Testimonial Carousel */}
-        <div className="relative">
+        <div className="relative touch-pan-y">
           <AnimatePresence initial={false} custom={direction} mode="wait">
             <motion.div
               key={current}
@@ -79,12 +79,14 @@ export function Testimonials() {
                 opacity: { duration: 0.2 },
               }}
               drag="x"
-              dragElastic={0.5}
+              dragElastic={0.2}
               dragConstraints={{ left: 0, right: 0 }}
               dragTransition={{
                 bounceStiffness: 600,
                 bounceDamping: 20,
+                power: 0.2,
               }}
+              dragMomentum={false}
               onDragEnd={(e, { offset, velocity }) => {
                 const swipe = swipePower(offset.x, velocity.x);
 
@@ -94,7 +96,8 @@ export function Testimonials() {
                   paginate(-1);
                 }
               }}
-              className="w-full"
+              className="w-full touch-none select-none"
+              style={{ touchAction: 'pan-y' }}
             >
               <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg border border-border/50">
                 <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">

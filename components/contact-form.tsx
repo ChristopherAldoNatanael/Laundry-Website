@@ -8,15 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, User, Phone, MessageSquare, Send, MapPin, Clock, AlertTriangle } from "lucide-react";
 import { BUSINESS_CONFIG } from "@/lib/constants";
 import { useToast } from "@/hooks/use-toast";
-import {
-  sanitizeTextInput,
-  sanitizeWhatsAppMessage,
-  validateEmail,
-  validateName,
-  validatePhoneNumber,
-  sanitizePhoneNumber,
-  checkRateLimit,
-} from "@/lib/security";
+import { sanitizeTextInput, sanitizeWhatsAppMessage, validateEmail, validateName, validatePhoneNumber, sanitizePhoneNumber, checkRateLimit } from "@/lib/security";
 
 export function ContactForm() {
   const { toast } = useToast();
@@ -105,7 +97,7 @@ export function ContactForm() {
 
     // Build WhatsApp message with sanitized data
     const messageText = `Halo! Saya ingin bertanya:\n\nNama: ${safeName}\nPhone: ${safePhone}\nEmail: ${safeEmail}\n\nPesan:\n${safeMessage}`;
-    
+
     // Sanitize for WhatsApp URL
     const encodedMessage = sanitizeWhatsAppMessage(messageText);
 
@@ -123,10 +115,10 @@ export function ContactForm() {
 
     // Open WhatsApp with secure parameters
     const whatsappUrl = `https://wa.me/${safeWhatsAppNumber}?text=${encodedMessage}`;
-    
+
     try {
       window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-      
+
       toast({
         title: "Pesan Terkirim!",
         description: "Kami akan segera menghubungi Anda melalui WhatsApp.",
@@ -147,7 +139,7 @@ export function ContactForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
+
     // Clear error when user types
     if (errors[name]) {
       setErrors((prev) => {
@@ -159,7 +151,7 @@ export function ContactForm() {
 
     // Basic client-side sanitization on input
     let sanitizedValue = value;
-    
+
     if (name === "name") {
       sanitizedValue = sanitizeTextInput(value, 100, false);
     } else if (name === "email") {
@@ -269,19 +261,21 @@ export function ContactForm() {
 
           {/* Contact Form */}
           <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-card p-8 rounded-2xl shadow-lg border border-border">              <div>
+            <form onSubmit={handleSubmit} className="space-y-6 bg-card p-8 rounded-2xl shadow-lg border border-border">
+              {" "}
+              <div>
                 <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
                   Nama Lengkap <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                  <Input 
-                    id="name" 
-                    name="name" 
-                    type="text" 
-                    required 
-                    value={formData.name} 
-                    onChange={handleChange} 
+                  <Input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
                     className={`pl-10 ${errors.name ? "border-red-500" : ""}`}
                     placeholder="Masukkan nama Anda"
                     maxLength={100}
@@ -296,20 +290,19 @@ export function ContactForm() {
                   </p>
                 )}
               </div>
-
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
                   Nomor Telepon <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                  <Input 
-                    id="phone" 
-                    name="phone" 
-                    type="tel" 
-                    required 
-                    value={formData.phone} 
-                    onChange={handleChange} 
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={handleChange}
                     className={`pl-10 ${errors.phone ? "border-red-500" : ""}`}
                     placeholder="08xxxxxxxxxx"
                     maxLength={15}
@@ -325,20 +318,19 @@ export function ContactForm() {
                   </p>
                 )}
               </div>
-
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                   Email <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                  <Input 
-                    id="email" 
-                    name="email" 
-                    type="email" 
-                    required 
-                    value={formData.email} 
-                    onChange={handleChange} 
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
                     className={`pl-10 ${errors.email ? "border-red-500" : ""}`}
                     placeholder="email@example.com"
                     maxLength={254}
@@ -353,19 +345,18 @@ export function ContactForm() {
                   </p>
                 )}
               </div>
-
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
                   Pesan <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <MessageSquare className="absolute left-3 top-3 text-muted-foreground" size={20} />
-                  <Textarea 
-                    id="message" 
-                    name="message" 
-                    required 
-                    value={formData.message} 
-                    onChange={handleChange} 
+                  <Textarea
+                    id="message"
+                    name="message"
+                    required
+                    value={formData.message}
+                    onChange={handleChange}
                     className={`pl-10 min-h-[120px] ${errors.message ? "border-red-500" : ""}`}
                     placeholder="Tuliskan pesan atau pertanyaan Anda..."
                     maxLength={1000}
@@ -380,13 +371,10 @@ export function ContactForm() {
                       {errors.message}
                     </p>
                   ) : (
-                    <p className="text-xs text-muted-foreground">
-                      {formData.message.length}/1000 karakter
-                    </p>
+                    <p className="text-xs text-muted-foreground">{formData.message.length}/1000 karakter</p>
                   )}
                 </div>
               </div>
-
               <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-lg" size="lg">
                 {isSubmitting ? (
                   <>

@@ -2,28 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Smooth scrolling for the entire page */
+/* 🔧 MOBILE FIX: Smooth scrolling untuk entire page */
 html {
   scroll-behavior: smooth;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+  /* Prevent bounce/overscroll on iOS */
+  overscroll-behavior: none;
+  /* Better text rendering */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
-/* Prevent layout shift on mobile */
+/* 🔧 MOBILE FIX: Prevent layout shift dan scroll bugs */
 body {
   font-family: Arial, Helvetica, sans-serif;
+  /* Prevent horizontal scroll */
   overflow-x: hidden;
+  /* Prevent vertical overscroll bounce on mobile */
+  overscroll-behavior-y: none;
+  /* Smooth font rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent content jump on mobile */
+  position: relative;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  /* Prevent text selection on mobile tap/drag */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: text;
 }
 
-/* Optimize touch interactions on mobile */
+/* 🔧 MOBILE FIX: Optimize touch interactions */
 * {
+  /* Remove tap highlight */
   -webkit-tap-highlight-color: transparent;
+  /* Prevent text inflation on mobile */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* 🔧 MOBILE FIX: Prevent horizontal overflow on all elements */
+*,
+*::before,
+*::after {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Better focus states for accessibility */
 *:focus-visible {
   outline: 2px solid hsl(var(--primary));
   outline-offset: 2px;
+}
+
+/* 🔧 MOBILE FIX: Container yang aman untuk mobile */
+#__next,
+main {
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
 }
 
 @layer utilities {
@@ -38,6 +77,43 @@ body {
 
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* 🔧 MOBILE FIX: Prevent horizontal scroll */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* 🔧 MOBILE FIX: Smooth scroll container */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 🔧 MOBILE FIX: Prevent text selection on drag */
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* 🔧 MOBILE FIX: GPU acceleration for smooth animations */
+  .gpu-accelerate {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* 🔧 MOBILE FIX: Prevent overscroll bounce */
+  .no-overscroll {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

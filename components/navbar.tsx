@@ -21,10 +21,20 @@ export function Navbar() {
 
   const handleNavClick = (href: string) => {
     setIsOpen(false)
-    const element = document.querySelector(href)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
+    
+    // 🔧 MOBILE FIX: Prevent scroll jump dengan timeout
+    setTimeout(() => {
+      const element = document.querySelector(href)
+      if (element) {
+        const offsetTop = element.getBoundingClientRect().top + window.pageYOffset
+        const offsetPosition = offsetTop - 80 // Offset untuk navbar height
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        })
+      }
+    }, 100)
   }
 
   const whatsappLink = generateWhatsAppLink()

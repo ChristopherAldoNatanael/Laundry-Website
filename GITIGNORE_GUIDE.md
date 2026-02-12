@@ -9,6 +9,7 @@ File `.gitignore` sudah dikonfigurasi untuk melindungi data sensitif Anda.
 ## ✅ **File yang DI-IGNORE (Tidak akan ter-upload)**
 
 ### 1. **Environment Variables** 🔐
+
 ```
 .env
 .env.local
@@ -16,18 +17,23 @@ File `.gitignore` sudah dikonfigurasi untuk melindungi data sensitif Anda.
 .env.development.local
 .env.production.local
 ```
+
 **Alasan:** Berisi nomor WhatsApp, email, dan data sensitif bisnis
 
 **Yang AMAN di-upload:**
+
 - ✅ `.env.example` - Template tanpa data real
 
 ---
 
 ### 2. **Dependencies** 📦
+
 ```
 node_modules/
 ```
-**Alasan:** 
+
+**Alasan:**
+
 - Ukuran sangat besar (100MB+)
 - Akan di-download otomatis saat `npm install`
 - Tidak perlu di-track di Git
@@ -35,13 +41,16 @@ node_modules/
 ---
 
 ### 3. **Build Output** 🏗️
+
 ```
 .next/
 out/
 build/
 dist/
 ```
-**Alasan:** 
+
+**Alasan:**
+
 - File hasil build otomatis
 - Akan di-generate ulang saat deployment
 - Ukuran besar dan tidak perlu di-track
@@ -49,59 +58,71 @@ dist/
 ---
 
 ### 4. **Lock Files** 🔒
+
 ```
 package-lock.json  ← Ignored (kita pakai pnpm)
 yarn.lock          ← Ignored (kita pakai pnpm)
 pnpm-lock.yaml     ← KEPT (jangan di-ignore!)
 ```
-**Alasan:** 
+
+**Alasan:**
+
 - Hanya perlu 1 lock file (sesuai package manager)
 - `pnpm-lock.yaml` DI-UPLOAD untuk reproducible builds
 
 ---
 
 ### 5. **OS Files** 💻
+
 ```
 .DS_Store      ← Mac
 Thumbs.db      ← Windows
 Desktop.ini    ← Windows
 ```
+
 **Alasan:** File sistem operasi yang tidak relevan
 
 ---
 
 ### 6. **Editor Files** 📝
+
 ```
 .vscode/       ← VSCode settings (sebagian)
 .idea/         ← IntelliJ IDEA
 *.swp, *.swo   ← Vim
 ```
+
 **Alasan:** Preferensi personal editor
 
 **Yang AMAN di-upload:**
+
 - ✅ `.vscode/extensions.json` - Rekomendasi ekstensi
 - ✅ `.vscode/settings.json` - Shared settings
 
 ---
 
 ### 7. **Logs & Cache** 📋
+
 ```
 npm-debug.log*
 *.log
 .cache
 .eslintcache
 ```
+
 **Alasan:** File temporary yang tidak perlu
 
 ---
 
 ### 8. **Sensitive Files** 🔐
+
 ```
 *.pem          ← SSL certificates
 *.key          ← Private keys
 *.cert         ← Certificates
 *.db           ← Databases
 ```
+
 **Alasan:** File sensitif yang BERBAHAYA jika bocor
 
 ---
@@ -109,6 +130,7 @@ npm-debug.log*
 ## ⚠️ **BAHAYA jika File Ini Ter-upload ke GitHub**
 
 ### Jika `.env` ter-upload:
+
 ```
 ❌ BAHAYA BESAR!
 - Nomor WhatsApp Anda PUBLIK
@@ -117,7 +139,9 @@ npm-debug.log*
 ```
 
 **Solusi jika sudah terlanjur:**
+
 1. Hapus file dari Git history:
+
 ```bash
 git filter-branch --force --index-filter \
   "git rm --cached --ignore-unmatch .env" \
@@ -126,6 +150,7 @@ git filter-branch --force --index-filter \
 
 2. Ganti semua credentials (nomor WA, email, dll)
 3. Push force:
+
 ```bash
 git push origin --force --all
 ```
@@ -135,6 +160,7 @@ git push origin --force --all
 ## ✅ **CARA VERIFY Gitignore Bekerja**
 
 ### 1. Cek File yang Akan Di-Upload
+
 ```powershell
 # Lihat file yang akan di-commit
 git status
@@ -147,6 +173,7 @@ git status
 ```
 
 ### 2. Test Gitignore
+
 ```powershell
 # Coba buat file .env
 echo "TEST=123" > .env.local
@@ -160,7 +187,9 @@ del .env.local
 ```
 
 ### 3. Check Remote Repository
+
 Setelah push ke GitHub:
+
 1. Buka repository di github.com
 2. Verify TIDAK ADA:
    - ❌ `.env` atau `.env.local`
@@ -186,6 +215,7 @@ Setelah push ke GitHub:
 ## 🚀 **WORKFLOW Git yang Aman**
 
 ### 1. First Commit (Pertama Kali)
+
 ```powershell
 # Initialize git
 git init
@@ -210,6 +240,7 @@ git push -u origin main
 ```
 
 ### 2. Regular Updates
+
 ```powershell
 # Lihat perubahan
 git status
@@ -225,6 +256,7 @@ git push
 ```
 
 ### 3. Check Before Push
+
 ```powershell
 # Lihat files yang akan di-push
 git diff --cached --name-only
@@ -240,7 +272,9 @@ git diff --cached --name-only
 ## 🔍 **Troubleshooting**
 
 ### Problem 1: ".env sudah ter-upload!"
+
 **Solusi:**
+
 ```powershell
 # Remove dari Git (tapi tetap ada di local)
 git rm --cached .env
@@ -255,7 +289,9 @@ git push
 ```
 
 ### Problem 2: "node_modules ter-upload!"
+
 **Solusi:**
+
 ```powershell
 # Remove dari Git
 git rm -r --cached node_modules
@@ -268,7 +304,9 @@ git push
 ```
 
 ### Problem 3: ".gitignore tidak bekerja"
+
 **Solusi:**
+
 ```powershell
 # Clear Git cache
 git rm -r --cached .
@@ -288,11 +326,13 @@ git push
 ## 📚 **Resources**
 
 ### .gitignore Templates
+
 - **Next.js:** https://github.com/vercel/next.js/blob/canary/.gitignore
 - **Node.js:** https://github.com/github/gitignore/blob/main/Node.gitignore
 - **GitHub Collection:** https://github.com/github/gitignore
 
 ### Check Your Repository
+
 - **GitHub Security:** https://github.com/[username]/[repo]/security
 - **GitGuardian:** https://www.gitguardian.com/ (scan for secrets)
 
@@ -301,6 +341,7 @@ git push
 ## ✅ **Summary**
 
 **File yang DI-UPLOAD (Safe):**
+
 - ✅ Source code (`.tsx`, `.ts`, `.css`)
 - ✅ Configuration (`.json`, `.config.js`)
 - ✅ Documentation (`.md`)
@@ -309,6 +350,7 @@ git push
 - ✅ `.gitignore` (ini file)
 
 **File yang TIDAK DI-UPLOAD (Protected):**
+
 - ❌ `.env`, `.env.local` (secrets)
 - ❌ `node_modules/` (dependencies)
 - ❌ `.next/`, `out/` (build output)

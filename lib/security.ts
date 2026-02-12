@@ -75,25 +75,12 @@ export function sanitizeUrl(url: string): string {
     // For absolute URLs, validate with URL constructor
     if (/^https?:\/\//i.test(trimmed)) {
       const parsed = new URL(trimmed);
-      
+
       // Whitelist allowed domains for external links
-      const allowedDomains = [
-        "wa.me",
-        "api.whatsapp.com",
-        "instagram.com",
-        "www.instagram.com",
-        "facebook.com",
-        "www.facebook.com",
-        "tiktok.com",
-        "www.tiktok.com",
-        "github.com",
-        "vercel.com",
-      ];
+      const allowedDomains = ["wa.me", "api.whatsapp.com", "instagram.com", "www.instagram.com", "facebook.com", "www.facebook.com", "tiktok.com", "www.tiktok.com", "github.com", "vercel.com"];
 
       const hostname = parsed.hostname.toLowerCase();
-      const isAllowed = allowedDomains.some(
-        (domain) => hostname === domain || hostname.endsWith("." + domain)
-      );
+      const isAllowed = allowedDomains.some((domain) => hostname === domain || hostname.endsWith("." + domain));
 
       if (!isAllowed) {
         console.warn("[Security] Blocked URL to non-whitelisted domain:", hostname);
@@ -156,7 +143,7 @@ export function validateEmail(email: string): boolean {
 
   // Basic email validation (not full RFC 5322)
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-  
+
   if (!emailRegex.test(email)) {
     return false;
   }
@@ -172,11 +159,7 @@ export function validateEmail(email: string): boolean {
 /**
  * Sanitize text input with length limits
  */
-export function sanitizeTextInput(
-  input: string,
-  maxLength: number = 1000,
-  allowNewlines: boolean = true
-): string {
+export function sanitizeTextInput(input: string, maxLength: number = 1000, allowNewlines: boolean = true): string {
   if (!input || typeof input !== "string") {
     return "";
   }
@@ -241,14 +224,11 @@ export function sanitizeWhatsAppMessage(message: string): string {
 
   // Encode URL-like patterns to prevent clickjacking
   // But allow legitimate URLs (basic detection)
-  sanitized = sanitized.replace(
-    /(https?:\/\/[^\s]+)/gi,
-    (url) => {
-      // Validate URL before allowing it
-      const validated = sanitizeUrl(url);
-      return validated ? url : "[URL REMOVED]";
-    }
-  );
+  sanitized = sanitized.replace(/(https?:\/\/[^\s]+)/gi, (url) => {
+    // Validate URL before allowing it
+    const validated = sanitizeUrl(url);
+    return validated ? url : "[URL REMOVED]";
+  });
 
   // Limit length (WhatsApp has message limits)
   if (sanitized.length > 1000) {
@@ -419,11 +399,7 @@ export function getCookie(name: string): string | null {
  */
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
-export function checkRateLimit(
-  identifier: string,
-  maxAttempts: number = 5,
-  windowMs: number = 60000
-): { allowed: boolean; retryAfter?: number } {
+export function checkRateLimit(identifier: string, maxAttempts: number = 5, windowMs: number = 60000): { allowed: boolean; retryAfter?: number } {
   const now = Date.now();
   const record = rateLimitMap.get(identifier);
 

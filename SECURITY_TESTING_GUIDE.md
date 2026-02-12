@@ -5,6 +5,7 @@
 ### 🔴 XSS (Cross-Site Scripting) Tests
 
 #### Test 1: Basic Script Injection
+
 **Target:** Contact Form (all fields)
 
 ```javascript
@@ -19,6 +20,7 @@ javascript:alert('XSS')
 **Expected Result:** ✅ Input sanitized, HTML stripped
 
 **How to Test:**
+
 1. Open contact form
 2. Enter payload in Name field
 3. Submit form
@@ -28,12 +30,13 @@ javascript:alert('XSS')
 ---
 
 #### Test 2: DOM-based XSS
+
 **Target:** URL parameters, localStorage
 
 ```javascript
 // In browser console:
-localStorage.setItem('test', '<script>alert(1)</script>');
-SecureStorage.getItem('test'); // Should be sanitized
+localStorage.setItem("test", "<script>alert(1)</script>");
+SecureStorage.getItem("test"); // Should be sanitized
 ```
 
 **Expected Result:** ✅ Malicious content blocked/removed
@@ -41,11 +44,12 @@ SecureStorage.getItem('test'); // Should be sanitized
 ---
 
 #### Test 3: Stored XSS
+
 **Target:** localStorage persistence
 
 ```javascript
 // Test:
-localStorage.setItem('hydration-warning-dismissed', '<img src=x onerror=alert(1)>');
+localStorage.setItem("hydration-warning-dismissed", "<img src=x onerror=alert(1)>");
 // Refresh page
 
 // Expected: No alert, value sanitized
@@ -56,6 +60,7 @@ localStorage.setItem('hydration-warning-dismissed', '<img src=x onerror=alert(1)
 ### 🟡 Open Redirect Tests
 
 #### Test 1: WhatsApp Redirect
+
 **Target:** Contact form submission
 
 ```javascript
@@ -68,6 +73,7 @@ Check this out: https://malicious-site.com
 ---
 
 #### Test 2: External Link Validation
+
 **Target:** Social media links
 
 ```javascript
@@ -80,23 +86,26 @@ Check this out: https://malicious-site.com
 ### 🟢 Clickjacking Tests
 
 #### Test 1: Frame Embedding
+
 **Test Page:** Create HTML file with:
 
 ```html
 <!DOCTYPE html>
 <html>
-<body>
-  <h1>Clickjacking Test</h1>
-  <iframe src="http://localhost:3000" width="800" height="600"></iframe>
-</body>
+  <body>
+    <h1>Clickjacking Test</h1>
+    <iframe src="http://localhost:3000" width="800" height="600"></iframe>
+  </body>
 </html>
 ```
 
-**Expected Result:** 
+**Expected Result:**
+
 - ✅ X-Frame-Options blocks embedding from other origins
 - ✅ CSP frame-ancestors prevents framing
 
 **How to Test:**
+
 1. Save HTML file
 2. Open in browser
 3. Check if site loads in iframe
@@ -107,6 +116,7 @@ Check this out: https://malicious-site.com
 ### 🔵 Cookie Security Tests
 
 #### Test 1: Cookie Flags
+
 **Target:** Sidebar state cookie
 
 ```javascript
@@ -123,6 +133,7 @@ document.cookie = "sidebar:state=true";
 ---
 
 #### Test 2: CSRF Protection
+
 **Test:** Try to set cookie from external domain
 
 ```javascript
@@ -134,60 +145,64 @@ document.cookie = "sidebar:state=true";
 ### 🟣 Input Validation Tests
 
 #### Test 1: Name Field Validation
+
 **Target:** Contact form name input
 
 ```javascript
 // Test cases:
-"John Doe" // ✅ Valid
-"John123" // ❌ Invalid (numbers)
-"A" // ✅ Valid (1 character)
-"A".repeat(101) // ❌ Invalid (too long)
-"<script>alert(1)</script>" // ❌ Sanitized
-"John-Paul O'Brien" // ✅ Valid (hyphens, apostrophes)
+"John Doe"; // ✅ Valid
+"John123"; // ❌ Invalid (numbers)
+"A"; // ✅ Valid (1 character)
+"A".repeat(101); // ❌ Invalid (too long)
+("<script>alert(1)</script>"); // ❌ Sanitized
+("John-Paul O'Brien"); // ✅ Valid (hyphens, apostrophes)
 ```
 
 ---
 
 #### Test 2: Email Validation
+
 **Target:** Contact form email input
 
 ```javascript
 // Test cases:
-"test@example.com" // ✅ Valid
-"invalid-email" // ❌ Invalid
-"test@" // ❌ Invalid
-"test@domain" // ❌ Invalid
-"a".repeat(255) + "@test.com" // ❌ Too long
-"test+alias@example.com" // ✅ Valid
+"test@example.com"; // ✅ Valid
+"invalid-email"; // ❌ Invalid
+"test@"; // ❌ Invalid
+"test@domain"; // ❌ Invalid
+"a".repeat(255) + "@test.com"; // ❌ Too long
+("test+alias@example.com"); // ✅ Valid
 ```
 
 ---
 
 #### Test 3: Phone Validation
+
 **Target:** Contact form phone input
 
 ```javascript
 // Test cases:
-"08123456789" // ✅ Valid
-"123" // ❌ Too short
-"1".repeat(20) // ❌ Too long
-"abc123" // ❌ Non-numeric
-"+6281234567890" // ✅ Valid (international format)
+"08123456789"; // ✅ Valid
+"123"; // ❌ Too short
+"1".repeat(20); // ❌ Too long
+("abc123"); // ❌ Non-numeric
+("+6281234567890"); // ✅ Valid (international format)
 ```
 
 ---
 
 #### Test 4: Message Field
+
 **Target:** Contact form message textarea
 
 ```javascript
 // Test cases:
-"Hello, I need help" // ✅ Valid
-"Hi" // ❌ Too short (< 10 chars)
-"X".repeat(1001) // ❌ Too long (> 1000 chars)
-"<script>alert(1)</script>" // ❌ Sanitized
-"https://example.com" // ✅ Valid URL (whitelisted)
-"https://evil.com" // ⚠️ Validated or marked
+"Hello, I need help"; // ✅ Valid
+"Hi"; // ❌ Too short (< 10 chars)
+"X".repeat(1001); // ❌ Too long (> 1000 chars)
+("<script>alert(1)</script>"); // ❌ Sanitized
+("https://example.com"); // ✅ Valid URL (whitelisted)
+("https://evil.com"); // ⚠️ Validated or marked
 ```
 
 ---
@@ -195,6 +210,7 @@ document.cookie = "sidebar:state=true";
 ### 🟠 Rate Limiting Tests
 
 #### Test 1: Form Submission Rate Limit
+
 **Target:** Contact form
 
 ```javascript
@@ -228,6 +244,7 @@ Content-Security-Policy: (see full policy in next.config.mjs)
 ```
 
 **How to Test:**
+
 1. Open DevTools → Network
 2. Refresh page
 3. Click on document request
@@ -256,12 +273,11 @@ eval("alert('CSP Test')"); // Should be blocked if eval blocked
 
 ```html
 <!-- All external links should have: -->
-<a href="https://example.com" target="_blank" rel="noopener noreferrer">
-  Link
-</a>
+<a href="https://example.com" target="_blank" rel="noopener noreferrer"> Link </a>
 ```
 
 **How to Test:**
+
 1. Click external link (Instagram, Facebook, etc.)
 2. In opened tab, check `window.opener`
 3. Expected: `null` (no access to parent window)
@@ -301,18 +317,14 @@ Create `scripts/security-test.js`:
 ```javascript
 // Example automated tests
 const testXSS = () => {
-  const payloads = [
-    '<script>alert(1)</script>',
-    '<img src=x onerror=alert(1)>',
-    'javascript:alert(1)',
-  ];
+  const payloads = ["<script>alert(1)</script>", "<img src=x onerror=alert(1)>", "javascript:alert(1)"];
 
-  payloads.forEach(payload => {
+  payloads.forEach((payload) => {
     const sanitized = sanitizeTextInput(payload);
-    if (sanitized.includes('<script') || sanitized.includes('javascript:')) {
-      console.error('❌ XSS test failed:', payload);
+    if (sanitized.includes("<script") || sanitized.includes("javascript:")) {
+      console.error("❌ XSS test failed:", payload);
     } else {
-      console.log('✅ XSS test passed:', payload);
+      console.log("✅ XSS test passed:", payload);
     }
   });
 };
@@ -326,9 +338,11 @@ testXSS();
 ## 🔍 Browser Security Audit Tools
 
 ### 1. Chrome DevTools Security Tab
+
 **Access:** DevTools → Security
 
 **Check:**
+
 - ✅ Valid HTTPS certificate
 - ✅ Secure connection
 - ✅ No mixed content warnings
@@ -336,9 +350,11 @@ testXSS();
 ---
 
 ### 2. Lighthouse Security Audit
+
 **Access:** DevTools → Lighthouse → Best Practices
 
 **Run audit and verify:**
+
 - ✅ HTTPS enabled
 - ✅ No vulnerabilities detected
 - ✅ Best practices score > 90
@@ -346,9 +362,11 @@ testXSS();
 ---
 
 ### 3. SecurityHeaders.com
+
 **URL:** https://securityheaders.com/
 
 **Steps:**
+
 1. Enter your production URL
 2. Click "Scan"
 3. Target grade: **A** or higher
@@ -356,9 +374,11 @@ testXSS();
 ---
 
 ### 4. Mozilla Observatory
+
 **URL:** https://observatory.mozilla.org/
 
 **Steps:**
+
 1. Enter your production URL
 2. Click "Scan Me"
 3. Target score: **B+** or higher
@@ -377,49 +397,61 @@ testXSS();
 ## Test Results
 
 ### XSS Tests
+
 - [ ] Basic script injection: PASS/FAIL
 - [ ] DOM-based XSS: PASS/FAIL
 - [ ] Stored XSS: PASS/FAIL
 
 ### Open Redirect Tests
+
 - [ ] WhatsApp redirect: PASS/FAIL
 - [ ] External links: PASS/FAIL
 
 ### Clickjacking Tests
+
 - [ ] Frame embedding: PASS/FAIL
 
 ### Cookie Security Tests
+
 - [ ] Cookie flags: PASS/FAIL
 - [ ] CSRF protection: PASS/FAIL
 
 ### Input Validation Tests
+
 - [ ] Name validation: PASS/FAIL
 - [ ] Email validation: PASS/FAIL
 - [ ] Phone validation: PASS/FAIL
 - [ ] Message validation: PASS/FAIL
 
 ### Rate Limiting Tests
+
 - [ ] Form submission: PASS/FAIL
 
 ### Security Headers Tests
+
 - [ ] All headers present: PASS/FAIL
 - [ ] CSP compliance: PASS/FAIL
 
 ### External Link Tests
+
 - [ ] Tabnabbing prevention: PASS/FAIL
 
 ### Dependency Tests
+
 - [ ] No vulnerabilities: PASS/FAIL
 
 ## Issues Found
+
 1. [Issue description]
 2. [Issue description]
 
 ## Recommendations
+
 1. [Recommendation]
 2. [Recommendation]
 
 ## Overall Status
+
 ✅ PASS / ❌ FAIL
 
 **Signature:** [Name]
@@ -447,23 +479,29 @@ testXSS();
 **CVSS Score:** [0-10]
 
 ## Description
+
 [Detailed description]
 
 ## Steps to Reproduce
+
 1. [Step 1]
 2. [Step 2]
 3. [Step 3]
 
 ## Impact
+
 [What can attacker do?]
 
 ## Proof of Concept
+
 [Code or screenshot]
 
 ## Suggested Fix
+
 [How to fix]
 
 ## References
+
 [Related CVEs, articles]
 ```
 
@@ -472,20 +510,24 @@ testXSS();
 ## 🎯 Security Testing Schedule
 
 ### Daily (Development)
+
 - [ ] Input validation on new forms
 - [ ] XSS tests on new features
 
 ### Weekly
+
 - [ ] `pnpm audit`
 - [ ] Manual form testing
 - [ ] Header verification
 
 ### Monthly
+
 - [ ] Full security test suite
 - [ ] Dependency updates
 - [ ] Third-party scan (SecurityHeaders.com)
 
 ### Quarterly
+
 - [ ] Comprehensive security audit
 - [ ] Penetration testing (if applicable)
 - [ ] Update SECURITY_AUDIT_REPORT.md
@@ -495,18 +537,21 @@ testXSS();
 ## 📚 Resources
 
 ### Testing Tools
+
 - **OWASP ZAP:** https://www.zaproxy.org/
 - **Burp Suite:** https://portswigger.net/burp
 - **SQLMap:** https://sqlmap.org/ (N/A for this app)
 - **Nikto:** https://github.com/sullo/nikto
 
 ### Online Scanners
+
 - **SecurityHeaders:** https://securityheaders.com/
 - **Mozilla Observatory:** https://observatory.mozilla.org/
 - **SSL Labs:** https://www.ssllabs.com/ssltest/
 - **CSP Evaluator:** https://csp-evaluator.withgoogle.com/
 
 ### Learning
+
 - **PortSwigger Academy:** https://portswigger.net/web-security
 - **OWASP Testing Guide:** https://owasp.org/www-project-web-security-testing-guide/
 

@@ -69,11 +69,13 @@
 ## 🚀 **COMMANDS - Copy Paste**
 
 ### Check Apa yang Akan Di-Upload
+
 ```powershell
 git status
 ```
 
 ### Pastikan File Aman
+
 ```powershell
 # Cek tidak ada file sensitif
 git status | Select-String -Pattern "\.env"
@@ -83,6 +85,7 @@ git status | Select-String -Pattern "node_modules"
 ```
 
 ### Upload ke GitHub (First Time)
+
 ```powershell
 git init
 git add .
@@ -93,6 +96,7 @@ git push -u origin main
 ```
 
 ### Update (Regular)
+
 ```powershell
 git add .
 git status  # ⚠️ CHECK DULU!
@@ -105,6 +109,7 @@ git push
 ## ⚠️ **EMERGENCY: File Sensitif Sudah Ke-upload!**
 
 ### Hapus .env dari Git History
+
 ```powershell
 # Remove file
 git rm --cached .env
@@ -120,6 +125,7 @@ git push
 ```
 
 ### Hapus node_modules dari Git
+
 ```powershell
 git rm -r --cached node_modules
 git commit -m "chore: Remove node_modules"
