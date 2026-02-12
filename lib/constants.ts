@@ -156,6 +156,90 @@ export const NAV_LINKS = [
   { href: "#home", label: "Beranda" },
   { href: "#services", label: "Layanan" },
   { href: "#pricing", label: "Harga" },
+  { href: "#gallery", label: "Galeri" },
   { href: "#testimonials", label: "Testimoni" },
+  { href: "#faq", label: "FAQ" },
   { href: "#contact", label: "Kontak" },
+];
+
+// FAQ Data
+export const FAQS = [
+  {
+    question: "Berapa lama waktu yang dibutuhkan untuk cuci regular?",
+    answer: "Untuk layanan reguler, waktu yang dibutuhkan adalah 2 hari kerja. Namun, kami juga menyediakan layanan express yang dapat selesai dalam 3 jam untuk kebutuhan mendesak Anda.",
+  },
+  {
+    question: "Apakah layanan antar jemput benar-benar gratis?",
+    answer: "Ya, layanan antar jemput kami 100% gratis untuk area tertentu dengan minimum order 5kg. Untuk area di luar jangkauan, akan dikenakan biaya tambahan yang terjangkau.",
+  },
+  {
+    question: "Apa yang membedakan dry cleaning dengan cuci biasa?",
+    answer: "Dry cleaning adalah proses pembersihan tanpa menggunakan air, khusus untuk pakaian premium seperti jas, gaun pesta, dan bahan delicate yang tidak boleh terkena air. Prosesnya menggunakan solvent khusus yang aman untuk kain sensitif.",
+  },
+  {
+    question: "Bagaimana jika ada pakaian yang rusak atau hilang?",
+    answer: "Kami memiliki jaminan 100% ganti rugi untuk pakaian yang rusak atau hilang selama dalam perawatan kami. Setiap pakaian akan difoto dan dicatat dengan teliti sebelum proses pencucian.",
+  },
+  {
+    question: "Apakah deterjen yang digunakan aman untuk kulit sensitif?",
+    answer: "Sangat aman! Kami menggunakan deterjen premium hypoallergenic yang ramah untuk kulit sensitif dan anak-anak. Semua produk kami telah tersertifikasi dermatologi.",
+  },
+  {
+    question: "Bagaimana cara pembayaran yang tersedia?",
+    answer: "Kami menerima berbagai metode pembayaran: Cash, Transfer Bank (BCA, Mandiri, BRI, BNI), E-wallet (GoPay, OVO, DANA, ShopeePay), dan QRIS. Pembayaran dapat dilakukan saat pengambilan atau melalui transfer.",
+  },
+  {
+    question: "Apakah bisa cuci kiloan untuk selimut atau boneka besar?",
+    answer: "Bisa! Kami melayani cuci kiloan untuk berbagai jenis barang termasuk selimut, bed cover, boneka, karpet, dan gorden. Untuk barang berukuran besar, harga dihitung berdasarkan berat dan tingkat kesulitan.",
+  },
+  {
+    question: "Bagaimana cara melacak status laundry saya?",
+    answer: "Anda dapat melacak status laundry melalui WhatsApp kami. Tim kami akan memberikan update berkala dan mengirimkan notifikasi saat laundry Anda sudah siap untuk diambil.",
+  },
+];
+
+// Gallery Data
+export const GALLERY = [
+  {
+    id: 1,
+    title: "Hasil Cuci Premium",
+    category: "before-after",
+    image: "https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=800&q=80",
+    description: "Pakaian putih kembali bersih cemerlang",
+  },
+  {
+    id: 2,
+    title: "Laundry Facility",
+    category: "facility",
+    image: "https://images.unsplash.com/photo-1604335399105-a0c585fd81a1?w=800&q=80",
+    description: "Mesin cuci modern dan berkualitas tinggi",
+  },
+  {
+    id: 3,
+    title: "Setrika Profesional",
+    category: "service",
+    image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&q=80",
+    description: "Hasil setrika yang rapi dan profesional",
+  },
+  {
+    id: 4,
+    title: "Dry Cleaning Area",
+    category: "facility",
+    image: "https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=80",
+    description: "Area dry cleaning khusus pakaian premium",
+  },
+  {
+    id: 5,
+    title: "Packaging Premium",
+    category: "service",
+    image: "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=800&q=80",
+    description: "Kemasan premium untuk melindungi pakaian",
+  },
+  {
+    id: 6,
+    title: "Clean & Fresh",
+    category: "before-after",
+    image: "https://images.unsplash.com/photo-1521656693074-0ef32e80a5d5?w=800&q=80",
+    description: "Hasil cuci yang bersih dan wangi",
+  },
 ];

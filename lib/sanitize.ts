@@ -115,3 +115,49 @@ export function safeJsonParse<T>(json: string, fallback: T): T {
     return fallback
   }
 }
+
+/**
+ * Sanitize input for WhatsApp message
+ */
+export function sanitizeWhatsAppMessage(message: string): string {
+  if (typeof message !== 'string') return ''
+  
+  return encodeURIComponent(
+    message
+      .replace(/[<>]/g, '') // Remove HTML-like tags
+      .trim()
+      .slice(0, 500) // Limit message length
+  )
+}
+
+/**
+ * Rate limiting check (simple in-memory implementation)
+ */
+const requestCounts = new Map<string, { count: number; timestamp: number }>()
+
+export function checkRateLimit(identifier: string, limit: number = 10, windowMs: number = 60000): boolean {
+  const now = Date.now()
+  const record = requestCounts.get(identifier)
+  
+  if (!record || now - record.timestamp > windowMs) {
+    requestCounts.set(identifier, { count: 1, timestamp: now })
+    return true
+  }
+  
+  if (record.count >= limit) {
+    return false
+  }
+  
+  record.count++
+  return true
+}
+
+/**
+ * Sanitize HTML to prevent XSS
+ */
+export function sanitizeHTML(html: string): string {
+  if (typeof html !== 'string') return ''
+  
+  // Remove all HTML tags
+  return html.replace(/<[^>]*>/g, '').trim()
+}

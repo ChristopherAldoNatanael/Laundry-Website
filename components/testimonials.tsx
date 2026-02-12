@@ -39,12 +39,19 @@ export function Testimonials() {
 
   // Auto-rotate testimonials
   useEffect(() => {
+    if (TESTIMONIALS.length <= 1) return // Don't auto-rotate if only 1 testimonial
+    
     const timer = setInterval(() => {
       setDirection(1)
       setCurrent((prev) => (prev + 1) % TESTIMONIALS.length)
     }, 5000)
+    
     return () => clearInterval(timer)
   }, [])
+
+  if (!TESTIMONIALS || TESTIMONIALS.length === 0) {
+    return null // Don't render if no testimonials
+  }
 
   const testimonial = TESTIMONIALS[current]
 
@@ -149,43 +156,49 @@ export function Testimonials() {
           </AnimatePresence>
 
           {/* Navigation Buttons */}
-          <div className="flex justify-center gap-4 mt-8">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => paginate(-1)}
-              className="rounded-full hover:bg-primary hover:text-white hover:border-primary"
-            >
-              <ChevronLeft size={24} />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => paginate(1)}
-              className="rounded-full hover:bg-primary hover:text-white hover:border-primary"
-            >
-              <ChevronRight size={24} />
-            </Button>
-          </div>
+          {TESTIMONIALS.length > 1 && (
+            <div className="flex justify-center gap-4 mt-8">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => paginate(-1)}
+                className="rounded-full hover:bg-primary hover:text-white hover:border-primary"
+                aria-label="Previous testimonial"
+              >
+                <ChevronLeft size={24} />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => paginate(1)}
+                className="rounded-full hover:bg-primary hover:text-white hover:border-primary"
+                aria-label="Next testimonial"
+              >
+                <ChevronRight size={24} />
+              </Button>
+            </div>
+          )}
 
           {/* Dots */}
-          <div className="flex justify-center gap-2 mt-6">
-            {TESTIMONIALS.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setDirection(index > current ? 1 : -1)
-                  setCurrent(index)
-                }}
-                className={`transition-all duration-300 rounded-full ${
-                  index === current
-                    ? 'bg-primary w-8 h-2'
-                    : 'bg-muted-foreground/30 w-2 h-2 hover:bg-muted-foreground/60'
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
+          {TESTIMONIALS.length > 1 && (
+            <div className="flex justify-center gap-2 mt-6">
+              {TESTIMONIALS.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setDirection(index > current ? 1 : -1)
+                    setCurrent(index)
+                  }}
+                  className={`transition-all duration-300 rounded-full ${
+                    index === current
+                      ? 'bg-primary w-8 h-2'
+                      : 'bg-muted-foreground/30 w-2 h-2 hover:bg-muted-foreground/60'
+                  }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
