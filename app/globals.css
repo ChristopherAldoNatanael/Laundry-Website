@@ -5,22 +5,22 @@
 /* 🔧 MOBILE FIX: Smooth scrolling untuk entire page */
 html {
   scroll-behavior: smooth;
-  /* Prevent horizontal scroll on mobile */
+  /* Prevent horizontal scroll ONLY, allow vertical */
   overflow-x: hidden;
-  /* Prevent bounce/overscroll on iOS */
-  overscroll-behavior: none;
+  overflow-y: auto;
   /* Better text rendering */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Allow normal scroll height */
+  height: 100%;
 }
 
 /* 🔧 MOBILE FIX: Prevent layout shift dan scroll bugs */
 body {
   font-family: Arial, Helvetica, sans-serif;
-  /* Prevent horizontal scroll */
+  /* Prevent horizontal scroll ONLY, allow vertical */
   overflow-x: hidden;
-  /* Prevent vertical overscroll bounce on mobile */
-  overscroll-behavior-y: none;
+  overflow-y: auto;
   /* Smooth font rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -28,9 +28,9 @@ body {
   position: relative;
   min-height: 100vh;
   min-height: -webkit-fill-available;
-  /* Prevent text selection on mobile tap/drag */
-  -webkit-user-select: none;
-  -moz-user-select: none;
+  /* Allow text selection for user */
+  -webkit-user-select: text;
+  -moz-user-select: text;
   user-select: text;
 }
 
@@ -43,11 +43,10 @@ body {
   text-size-adjust: 100%;
 }
 
-/* 🔧 MOBILE FIX: Prevent horizontal overflow on all elements */
+/* 🔧 MOBILE FIX: Box sizing for all elements */
 *,
 *::before,
 *::after {
-  max-width: 100%;
   box-sizing: border-box;
 }
 
@@ -57,10 +56,11 @@ body {
   outline-offset: 2px;
 }
 
-/* 🔧 MOBILE FIX: Container yang aman untuk mobile */
+/* 🔧 MOBILE FIX: Container yang aman untuk mobile - hanya prevent horizontal scroll */
 #__next,
 main {
   overflow-x: hidden;
+  overflow-y: visible;
   position: relative;
   width: 100%;
 }
@@ -110,10 +110,16 @@ main {
     will-change: transform;
   }
 
-  /* 🔧 MOBILE FIX: Prevent overscroll bounce */
-  .no-overscroll {
-    overscroll-behavior: none;
+  /* 🔧 MOBILE FIX: Prevent overscroll bounce on horizontal only */
+  .no-overscroll-x {
+    overscroll-behavior-x: none;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Allow normal vertical scroll */
+  .scroll-y-auto {
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 }
 

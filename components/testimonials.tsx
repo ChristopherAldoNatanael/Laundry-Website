@@ -97,7 +97,7 @@ export function Testimonials() {
                 }
               }}
               className="w-full touch-none select-none"
-              style={{ touchAction: 'pan-y' }}
+              style={{ touchAction: "pan-y" }}
             >
               <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg border border-border/50">
                 <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">

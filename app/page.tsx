@@ -15,20 +15,18 @@ import { Toaster } from "@/components/ui/toaster";
 
 export default function Home() {
   return (
-    <main className="relative w-full overflow-x-hidden min-h-screen">
+    <main className="relative min-h-screen">
       <ScrollProgress />
       <Navbar />
-      <div className="w-full overflow-x-hidden">
-        <Hero />
-        <Services />
-        <WhyUs />
-        <Pricing />
-        <Gallery />
-        <Testimonials />
-        <FAQ />
-        <CTA />
-        <ContactForm />
-      </div>
+      <Hero />
+      <Services />
+      <WhyUs />
+      <Pricing />
+      <Gallery />
+      <Testimonials />
+      <FAQ />
+      <CTA />
+      <ContactForm />
       <Footer />
       <FloatingChat />
       <Toaster />

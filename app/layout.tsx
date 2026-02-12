@@ -100,7 +100,7 @@ export default function RootLayout({
       <head>
         {/* 🔧 MOBILE FIX: Viewport meta untuk prevent zoom dan scroll bugs */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
-        
+
         {/* Inline script to remove extension attributes BEFORE React hydration */}
         <script
           dangerouslySetInnerHTML={{
@@ -136,12 +136,10 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       </head>
-      <body className={`${_inter.variable} ${_poppins.variable} font-sans antialiased overflow-x-hidden`} suppressHydrationWarning>
+      <body className={`${_inter.variable} ${_poppins.variable} font-sans antialiased`} suppressHydrationWarning>
         <SuppressHydrationWarnings />
         <HydrationFix />
-        <div className="relative w-full overflow-x-hidden">
-          {children}
-        </div>
+        {children}
       </body>
     </html>
   );
