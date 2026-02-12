@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
+    // 🔒 SECURITY NOTE: Consider enabling type checking in production
     ignoreBuildErrors: true,
   },
   // Suppress hydration warnings caused by browser extensions
@@ -53,7 +54,24 @@ const nextConfig = {
           },
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
+            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // 'unsafe-inline' needed for Next.js and framer-motion
+              "style-src 'self' 'unsafe-inline'", // 'unsafe-inline' needed for Tailwind and styled components
+              "img-src 'self' data: https: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://wa.me https://api.whatsapp.com",
+              "frame-src 'self' https://www.youtube.com https://www.google.com",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self' https://wa.me",
+              "frame-ancestors 'self'",
+              "upgrade-insecure-requests",
+            ].join("; "),
           },
         ],
       },

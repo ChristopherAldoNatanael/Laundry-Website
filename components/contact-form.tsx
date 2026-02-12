@@ -5,13 +5,23 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, User, Phone, MessageSquare, Send, MapPin, Clock } from "lucide-react";
+import { Mail, User, Phone, MessageSquare, Send, MapPin, Clock, AlertTriangle } from "lucide-react";
 import { BUSINESS_CONFIG } from "@/lib/constants";
 import { useToast } from "@/hooks/use-toast";
+import {
+  sanitizeTextInput,
+  sanitizeWhatsAppMessage,
+  validateEmail,
+  validateName,
+  validatePhoneNumber,
+  sanitizePhoneNumber,
+  checkRateLimit,
+} from "@/lib/security";
 
 export function ContactForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -19,30 +29,148 @@ export function ContactForm() {
     message: "",
   });
 
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    // Validate name
+    const sanitizedName = sanitizeTextInput(formData.name, 100, false);
+    if (!sanitizedName) {
+      newErrors.name = "Nama wajib diisi";
+    } else if (!validateName(sanitizedName)) {
+      newErrors.name = "Nama hanya boleh berisi huruf, spasi, dan tanda hubung";
+    }
+
+    // Validate phone
+    const sanitizedPhone = sanitizePhoneNumber(formData.phone);
+    if (!sanitizedPhone) {
+      newErrors.phone = "Nomor telepon tidak valid";
+    } else if (!validatePhoneNumber(sanitizedPhone)) {
+      newErrors.phone = "Format nomor telepon salah (7-15 digit)";
+    }
+
+    // Validate email
+    const sanitizedEmail = sanitizeTextInput(formData.email, 254, false);
+    if (!sanitizedEmail) {
+      newErrors.email = "Email wajib diisi";
+    } else if (!validateEmail(sanitizedEmail)) {
+      newErrors.email = "Format email tidak valid";
+    }
+
+    // Validate message
+    const sanitizedMessage = sanitizeTextInput(formData.message, 1000, true);
+    if (!sanitizedMessage) {
+      newErrors.message = "Pesan wajib diisi";
+    } else if (sanitizedMessage.length < 10) {
+      newErrors.message = "Pesan minimal 10 karakter";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate form
+    if (!validateForm()) {
+      toast({
+        title: "Validasi Gagal",
+        description: "Mohon perbaiki kesalahan pada form",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Rate limiting check (client-side only)
+    const rateLimitCheck = checkRateLimit("contact-form", 3, 60000);
+    if (!rateLimitCheck.allowed) {
+      toast({
+        title: "Terlalu Banyak Percobaan",
+        description: `Mohon tunggu ${rateLimitCheck.retryAfter} detik sebelum mengirim lagi`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Send to WhatsApp instead
-    const message = `Halo! Saya ingin bertanya:%0A%0ANama: ${formData.name}%0APhone: ${formData.phone}%0AEmail: ${formData.email}%0A%0APesan:%0A${formData.message}`;
-    window.open(`https://wa.me/${BUSINESS_CONFIG.whatsappNumber}?text=${message}`, "_blank");
+    // Sanitize all inputs
+    const safeName = sanitizeTextInput(formData.name, 100, false);
+    const safePhone = sanitizePhoneNumber(formData.phone);
+    const safeEmail = sanitizeTextInput(formData.email, 254, false);
+    const safeMessage = sanitizeTextInput(formData.message, 1000, true);
 
-    toast({
-      title: "Pesan Terkirim!",
-      description: "Kami akan segera menghubungi Anda melalui WhatsApp.",
-    });
+    // Build WhatsApp message with sanitized data
+    const messageText = `Halo! Saya ingin bertanya:\n\nNama: ${safeName}\nPhone: ${safePhone}\nEmail: ${safeEmail}\n\nPesan:\n${safeMessage}`;
+    
+    // Sanitize for WhatsApp URL
+    const encodedMessage = sanitizeWhatsAppMessage(messageText);
 
-    setFormData({ name: "", phone: "", email: "", message: "" });
-    setIsSubmitting(false);
+    // Validate WhatsApp number
+    const safeWhatsAppNumber = sanitizePhoneNumber(BUSINESS_CONFIG.whatsappNumber);
+    if (!safeWhatsAppNumber) {
+      toast({
+        title: "Error Konfigurasi",
+        description: "Nomor WhatsApp tidak valid. Hubungi administrator.",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Open WhatsApp with secure parameters
+    const whatsappUrl = `https://wa.me/${safeWhatsAppNumber}?text=${encodedMessage}`;
+    
+    try {
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      
+      toast({
+        title: "Pesan Terkirim!",
+        description: "Kami akan segera menghubungi Anda melalui WhatsApp.",
+      });
+
+      setFormData({ name: "", phone: "", email: "", message: "" });
+      setErrors({});
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Gagal membuka WhatsApp. Mohon coba lagi.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+
+    // Basic client-side sanitization on input
+    let sanitizedValue = value;
+    
+    if (name === "name") {
+      sanitizedValue = sanitizeTextInput(value, 100, false);
+    } else if (name === "email") {
+      sanitizedValue = sanitizeTextInput(value, 254, false);
+    } else if (name === "message") {
+      sanitizedValue = sanitizeTextInput(value, 1000, true);
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: sanitizedValue,
     }));
   };
 
@@ -141,44 +269,121 @@ export function ContactForm() {
 
           {/* Contact Form */}
           <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-card p-8 rounded-2xl shadow-lg border border-border">
-              <div>
+            <form onSubmit={handleSubmit} className="space-y-6 bg-card p-8 rounded-2xl shadow-lg border border-border">              <div>
                 <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
-                  Nama Lengkap
+                  Nama Lengkap <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                  <Input id="name" name="name" type="text" required value={formData.name} onChange={handleChange} className="pl-10" placeholder="Masukkan nama Anda" />
+                  <Input 
+                    id="name" 
+                    name="name" 
+                    type="text" 
+                    required 
+                    value={formData.name} 
+                    onChange={handleChange} 
+                    className={`pl-10 ${errors.name ? "border-red-500" : ""}`}
+                    placeholder="Masukkan nama Anda"
+                    maxLength={100}
+                    aria-invalid={!!errors.name}
+                    aria-describedby={errors.name ? "name-error" : undefined}
+                  />
                 </div>
+                {errors.name && (
+                  <p id="name-error" className="mt-1 text-sm text-red-500 flex items-center gap-1">
+                    <AlertTriangle size={14} />
+                    {errors.name}
+                  </p>
+                )}
               </div>
 
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
-                  Nomor Telepon
+                  Nomor Telepon <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                  <Input id="phone" name="phone" type="tel" required value={formData.phone} onChange={handleChange} className="pl-10" placeholder="08xxxxxxxxxx" />
+                  <Input 
+                    id="phone" 
+                    name="phone" 
+                    type="tel" 
+                    required 
+                    value={formData.phone} 
+                    onChange={handleChange} 
+                    className={`pl-10 ${errors.phone ? "border-red-500" : ""}`}
+                    placeholder="08xxxxxxxxxx"
+                    maxLength={15}
+                    pattern="[0-9]*"
+                    aria-invalid={!!errors.phone}
+                    aria-describedby={errors.phone ? "phone-error" : undefined}
+                  />
                 </div>
+                {errors.phone && (
+                  <p id="phone-error" className="mt-1 text-sm text-red-500 flex items-center gap-1">
+                    <AlertTriangle size={14} />
+                    {errors.phone}
+                  </p>
+                )}
               </div>
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                  Email
+                  Email <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-                  <Input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} className="pl-10" placeholder="email@example.com" />
+                  <Input 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    required 
+                    value={formData.email} 
+                    onChange={handleChange} 
+                    className={`pl-10 ${errors.email ? "border-red-500" : ""}`}
+                    placeholder="email@example.com"
+                    maxLength={254}
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? "email-error" : undefined}
+                  />
                 </div>
+                {errors.email && (
+                  <p id="email-error" className="mt-1 text-sm text-red-500 flex items-center gap-1">
+                    <AlertTriangle size={14} />
+                    {errors.email}
+                  </p>
+                )}
               </div>
 
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                  Pesan
+                  Pesan <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <MessageSquare className="absolute left-3 top-3 text-muted-foreground" size={20} />
-                  <Textarea id="message" name="message" required value={formData.message} onChange={handleChange} className="pl-10 min-h-[120px]" placeholder="Tuliskan pesan atau pertanyaan Anda..." />
+                  <Textarea 
+                    id="message" 
+                    name="message" 
+                    required 
+                    value={formData.message} 
+                    onChange={handleChange} 
+                    className={`pl-10 min-h-[120px] ${errors.message ? "border-red-500" : ""}`}
+                    placeholder="Tuliskan pesan atau pertanyaan Anda..."
+                    maxLength={1000}
+                    aria-invalid={!!errors.message}
+                    aria-describedby={errors.message ? "message-error" : undefined}
+                  />
+                </div>
+                <div className="flex justify-between items-center mt-1">
+                  {errors.message ? (
+                    <p id="message-error" className="text-sm text-red-500 flex items-center gap-1">
+                      <AlertTriangle size={14} />
+                      {errors.message}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      {formData.message.length}/1000 karakter
+                    </p>
+                  )}
                 </div>
               </div>
 

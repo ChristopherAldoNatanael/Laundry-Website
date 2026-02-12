@@ -1,63 +1,88 @@
-// WhatsApp Integration Utility
-import { BUSINESS_CONFIG, WHATSAPP_MESSAGE } from './constants'
+// 🔒 SECURE WhatsApp Integration Utility
+import { BUSINESS_CONFIG, WHATSAPP_MESSAGE } from './constants';
+import { sanitizePhoneNumber, sanitizeWhatsAppMessage, sanitizeUrl } from './security';
 
 /**
- * Generate WhatsApp link with optional custom message
+ * Generate secure WhatsApp link with sanitized message
  * @param customMessage - Optional custom message to send
- * @returns WhatsApp link URL
+ * @returns WhatsApp link URL or empty string if invalid
  */
 export function generateWhatsAppLink(customMessage?: string): string {
-  const baseUrl = 'https://wa.me'
-  const phoneNumber = BUSINESS_CONFIG.whatsappNumber
+  const baseUrl = 'https://wa.me';
+  const phoneNumber = sanitizePhoneNumber(BUSINESS_CONFIG.whatsappNumber);
 
   if (!phoneNumber) {
-    console.error('[WhatsApp] Phone number not configured')
-    return '#'
+    console.error('[WhatsApp] Phone number not configured or invalid');
+    return '';
   }
 
-  const message = customMessage ? encodeURIComponent(customMessage) : WHATSAPP_MESSAGE
-  return `${baseUrl}/${phoneNumber}?text=${message}`
+  const message = customMessage 
+    ? sanitizeWhatsAppMessage(customMessage) 
+    : WHATSAPP_MESSAGE;
+  
+  const url = `${baseUrl}/${phoneNumber}?text=${message}`;
+  
+  // Validate the constructed URL
+  const validatedUrl = sanitizeUrl(url);
+  return validatedUrl || '';
 }
 
 /**
- * Get WhatsApp link for ordering specific service
- * @param serviceName - Name of the service
+ * Get secure WhatsApp link for ordering specific service
+ * @param serviceName - Name of the service (will be sanitized)
  * @returns WhatsApp link URL
  */
 export function getServiceWhatsAppLink(serviceName: string): string {
-  const message = encodeURIComponent(
-    `Halo 👋 Saya ingin pesan layanan "${serviceName}". Bisa bantu?`
-  )
-  const phoneNumber = BUSINESS_CONFIG.whatsappNumber
-  return `https://wa.me/${phoneNumber}?text=${message}`
+  if (!serviceName || typeof serviceName !== 'string') {
+    return '';
+  }
+
+  // Sanitize service name to prevent injection
+  const safeName = serviceName.substring(0, 100).trim();
+  const message = `Halo 👋 Saya ingin pesan layanan "${safeName}". Bisa bantu?`;
+  
+  return generateWhatsAppLink(message);
 }
 
 /**
- * Get WhatsApp link for ordering specific pricing plan
- * @param planName - Name of the pricing plan
+ * Get secure WhatsApp link for ordering specific pricing plan
+ * @param planName - Name of the pricing plan (will be sanitized)
  * @returns WhatsApp link URL
  */
 export function getPricingWhatsAppLink(planName: string): string {
-  const message = encodeURIComponent(
-    `Halo 👋 Saya tertarik dengan paket "${planName}". Bisa informasi lebih detail?`
-  )
-  const phoneNumber = BUSINESS_CONFIG.whatsappNumber
-  return `https://wa.me/${phoneNumber}?text=${message}`
+  if (!planName || typeof planName !== 'string') {
+    return '';
+  }
+
+  // Sanitize plan name to prevent injection
+  const safeName = planName.substring(0, 100).trim();
+  const message = `Halo 👋 Saya tertarik dengan paket "${safeName}". Bisa informasi lebih detail?`;
+  
+  return generateWhatsAppLink(message);
 }
 
 /**
  * Safe link opener that validates URL before navigation
+ * Prevents open redirect and clickjacking attacks
  * @param url - URL to navigate to
  */
 export function openWhatsApp(url: string): void {
   if (!url || typeof url !== 'string') {
-    console.error('[WhatsApp] Invalid URL')
-    return
+    console.error('[WhatsApp] Invalid URL');
+    return;
+  }
+
+  // Validate URL before opening
+  const validatedUrl = sanitizeUrl(url);
+  if (!validatedUrl) {
+    console.error('[WhatsApp] URL failed security validation');
+    return;
   }
 
   try {
-    window.open(url, '_blank', 'noopener,noreferrer')
+    // Open with security flags to prevent tabnabbing
+    window.open(validatedUrl, '_blank', 'noopener,noreferrer');
   } catch (error) {
-    console.error('[WhatsApp] Error opening link:', error)
+    console.error('[WhatsApp] Error opening link:', error);
   }
 }

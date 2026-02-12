@@ -1,10 +1,189 @@
-# v0 runtime files (should only exist in preview, not in git)
+# =============================================================================
+# 🔒 SECURITY - NEVER COMMIT THESE FILES
+# =============================================================================
+# Environment variables with secrets
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Keep .env.example for documentation
+!.env.example
+
+# =============================================================================
+# DEPENDENCIES
+# =============================================================================
+node_modules/
+.pnp
+.pnp.js
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# =============================================================================
+# NEXT.JS BUILD OUTPUT
+# =============================================================================
+/.next/
+/out/
+.next
+out
+
+# Production build
+build
+dist
+
+# =============================================================================
+# V0 RUNTIME FILES (should only exist in preview, not in git)
+# =============================================================================
 __v0_runtime_loader.js
 __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
 
-# Common ignores
-node_modules/
-.next/
-.env*.local
+# =============================================================================
+# TESTING
+# =============================================================================
+/coverage
+.nyc_output
+*.lcov
+
+# =============================================================================
+# MISC
+# =============================================================================
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*~
+
+# =============================================================================
+# VERCEL
+# =============================================================================
+.vercel
+.vercel.json
+
+# =============================================================================
+# TYPESCRIPT
+# =============================================================================
+*.tsbuildinfo
+next-env.d.ts
+
+# =============================================================================
+# LOCAL DEVELOPMENT
+# =============================================================================
+# Local development files
+.turbo
+*.local
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Lock files - Keep pnpm-lock.yaml, ignore others
+package-lock.json
+yarn.lock
+
+# If using npm instead of pnpm, uncomment below:
+# pnpm-lock.yaml
+
+# If using yarn instead of pnpm, uncomment below:
+# pnpm-lock.yaml
+
+# =============================================================================
+# SENSITIVE DATA
+# =============================================================================
+# Private keys
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# =============================================================================
+# CACHE & LOGS
+# =============================================================================
+.cache
+*.log
+logs/
+*.logs
+.eslintcache
+.stylelintcache
+
+# =============================================================================
+# PERFORMANCE & TESTING
+# =============================================================================
+# Cypress / Playwright
+cypress/videos
+cypress/screenshots
+playwright-report/
+test-results/
+
+# Lighthouse
+.lighthouse
+.trace
+
+# =============================================================================
+# MONITORING SERVICES
+# =============================================================================
+# Sentry
+.sentryclirc
+
+# Storybook
+storybook-static
+
+# =============================================================================
+# GENERATED FILES (Optional - uncomment if auto-generated)
+# =============================================================================
+# public/sitemap.xml
+# public/robots.txt
+
+# =============================================================================
+# SECURITY SCAN RESULTS (Optional - uncomment if sensitive)
+# =============================================================================
+# security-scan-results/
+# vulnerability-report.txt
+# penetration-test-results/

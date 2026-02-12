@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { SecureStorage } from "@/lib/security";
 
 /**
  * DevWarningBanner
  *
  * Shows a helpful banner in development mode if hydration warnings are detected.
  * Only appears in development and can be dismissed.
+ * Uses secure storage to prevent XSS persistence.
  */
 export function DevWarningBanner() {
   const [showBanner, setShowBanner] = useState(false);
@@ -17,9 +19,9 @@ export function DevWarningBanner() {
     // Only run in development
     if (process.env.NODE_ENV !== "development") return;
 
-    // Check if user has dismissed the banner
-    const dismissed = localStorage.getItem("hydration-warning-dismissed");
-    if (dismissed) {
+    // Check if user has dismissed the banner (using secure storage)
+    const dismissed = SecureStorage.getItem("hydration-warning-dismissed");
+    if (dismissed === "true") {
       setIsDismissed(true);
       return;
     }
@@ -46,7 +48,7 @@ export function DevWarningBanner() {
   const handleDismiss = () => {
     setShowBanner(false);
     setIsDismissed(true);
-    localStorage.setItem("hydration-warning-dismissed", "true");
+    SecureStorage.setItem("hydration-warning-dismissed", "true");
   };
 
   if (!showBanner || isDismissed || process.env.NODE_ENV !== "development") {
